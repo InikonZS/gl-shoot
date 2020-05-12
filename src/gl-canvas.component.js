@@ -81,6 +81,19 @@ class GLCanvas extends Control{
     var positions = makeHorizontalPlaneModel({x:0, y:0}, {x:10.5, y:10.4}, -1);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
+      // Указываем атрибуту, как получать данные от positionBuffer (ARRAY_BUFFER)
+      var size = 3;          // 2 компоненты на итерацию
+      var type = gl.FLOAT;   // наши данные - 32-битные числа с плавающей точкой
+      var normalize = false; // не нормализовать данные
+      var stride = 0;        // 0 = перемещаться на size * sizeof(type) каждую итерацию для получения следующего положения
+      var offset = 0;        // начинать с начала буфера
+      gl.vertexAttribPointer(
+      positionAttributeLocation, size, type, normalize, stride, offset);
+
+      var primitiveType = gl.TRIANGLES;
+      var offset = 0;
+      var count = positions.length / size;
+
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
@@ -101,27 +114,9 @@ class GLCanvas extends Control{
         this.posX -= (moveSpeed * deltaTime)* Math.sin(this.camRX);
       }
       var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-      var matrix = m4.perspective(1, aspect, 1, 2000);
-      
-      matrix = m4.xRotate(matrix, this.camRY);
-      matrix = m4.yRotate(matrix, 0);
-      matrix = m4.zRotate(matrix, this.camRX);
-      matrix = m4.scale(matrix, 1, 1, 1);
-      matrix = m4.translate(matrix, this.posX, this.posY, 0);
-      //console.log(matrix);
+      var matrix = makeCameraMatrix(aspect, this.camRX, this.camRY, this.posX, this.posY, 0);
       gl.uniformMatrix4fv(matrixLocation, false, matrix);
-        // Указываем атрибуту, как получать данные от positionBuffer (ARRAY_BUFFER)
-      var size = 3;          // 2 компоненты на итерацию
-      var type = gl.FLOAT;   // наши данные - 32-битные числа с плавающей точкой
-      var normalize = false; // не нормализовать данные
-      var stride = 0;        // 0 = перемещаться на size * sizeof(type) каждую итерацию для получения следующего положения
-      var offset = 0;        // начинать с начала буфера
-      gl.vertexAttribPointer(
-      positionAttributeLocation, size, type, normalize, stride, offset);
-
-      var primitiveType = gl.TRIANGLES;
-      var offset = 0;
-      var count = positions.length / size;
+      
       gl.drawArrays(primitiveType, offset, count);
       requestAnimationFrame(drawScene);
     }
@@ -140,6 +135,34 @@ function makeHorizontalPlaneModel(v1, v2, z){
     v2.x, v1.y, z,
   ]; 
   return positions;  
+}
+
+function makeCameraMatrix(aspect, rx, ry, px, py, pz){
+  let matrix = m4.perspective(1, aspect, 0.1, 2000); 
+  matrix = m4.xRotate(matrix, ry);
+  matrix = m4.yRotate(matrix, 0);
+  matrix = m4.zRotate(matrix, rx);
+  matrix = m4.scale(matrix, 1, 1, 1);
+  matrix = m4.translate(matrix, px, py, pz);
+  return matrix;
+}
+
+class Player{
+  constructor (){
+    this.posX = 0;
+    this.posY = 0;
+    this.posZ = 0;
+    this.RX = 0;
+    this.RY = 0;
+
+    this.forward = false;
+    this.backward = false;
+    this.left = false;
+    this.right = false;
+  }
+
+
+
 }
 
 
