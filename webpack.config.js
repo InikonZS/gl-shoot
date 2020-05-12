@@ -29,7 +29,8 @@ module.exports = (env, options) => {
       new CopyWebpackPlugin([
         { from: `src/styles`, to: `styles` },
         { from: `src/index.html`, to: `index.html` },
-        { from: `src/assets`, to: `assets` }
+        { from: `src/assets`, to: `assets` },
+        { from: `src/ext-utils`, to: `ext-utils` }
       ]),
     ],
   };
