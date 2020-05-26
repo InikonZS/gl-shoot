@@ -45,6 +45,16 @@ class Vector3d{
     return new Vector3d(this.x+v.x, this.y+v.y, this.z+v.z); 
   }
 
+  mul(c, self){
+    if (self){
+      this.x *= c;  
+      this.y *= c; 
+      this.z *= c; 
+      return this;
+    }
+    return new Vector3d(this.x*c, this.y*c, this.z*c);
+  }
+
   isPositive(){
     return (this.x>0)&&(this.y>0)&&(this.z>0);
   }
