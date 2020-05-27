@@ -1179,6 +1179,18 @@ function getNormal(u, v, w){
   let d = Math.hypot(n.x, n.y, n.z);
   return {x: n.x/d, y: n.y/d, z: n.z/d}
 }
+
+function getValueD(v, n){
+  let d = -(v.x*n.x + v.y*n.y + v.z*n.z);
+}
+
+function solveLinear(v1, v2, u, v, w){
+  let n = getNormal (u, v, w);
+  let d = getValueD(u, n);
+  let nv = {x: v1.x-v2.x, y: v1.y-v2.y, z: v1.z-v2.z};
+  let h = (n.x*v1.x + n.y*v1.y + n.z*v1.z) / (n.x*nv.x + n.y*nv.y + n.z*nv.z);
+  return {x: v1.x + h*nv.x, y: v1.y + h*nv.y, z: v1.z + h*nv.z}
+}
 //i * vy * wz + j * vz * wx + k * vx * wy -
 //i * vz * wy - j * vx * wz + k * vy * wx
 //i*vy*wz + j*vz*wx + k*vx*wy -

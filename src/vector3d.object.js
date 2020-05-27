@@ -58,6 +58,10 @@ class Vector3d{
   isPositive(){
     return (this.x>0)&&(this.y>0)&&(this.z>0);
   }
+
+  abs(){
+    return Math.hypot(this.x, this.y, this.z);
+  }
 }
 
 module.exports = Vector3d;

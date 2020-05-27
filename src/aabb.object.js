@@ -1,5 +1,6 @@
 const Vector3d = require('./vector3d.object.js');
 const getModel = require('./model.object.js');
+const Calc = require('./calc.utils.js');
 
 class AABB{
   constructor(gl, aVector3d, bVector3d, color) {
@@ -86,6 +87,14 @@ function makeBoxModel(v0, l, w, h){
     ]
   );
 }
+
+function makeBoxNormalsFromVertexList(va){
+  var normals = [
+
+  ];
+  return normals;
+}
+
 
 function makeBoxModelFromVertexList(va){
   var positions = [
