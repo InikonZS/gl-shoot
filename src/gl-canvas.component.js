@@ -93,8 +93,8 @@ class GLCanvas extends Control{
         let pl = new Point(this.gl, new Vector3d(it.x,it.y,it.z) , new Vector3d(0,0,0));
         this.pointList.push(pl);  
       })
-      console.log('mtr', this.moved.getTransformed());
-      let rvm = solveList(this.moved.model.vertexList, sv, nnv, nv);
+      //console.log('mtr', this.moved.getTransformed());
+      let rvm = solveList(this.moved.getTransformed(), sv, nnv, nv);
       console.log('rvm',rvm)
       if (rvm) {this.pointList.push(new Point(this.gl, new Vector3d(rvm.x,rvm.y,rvm.z) , new Vector3d(0,0,0)))}
       console.log(this.pointList);

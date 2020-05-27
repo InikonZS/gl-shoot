@@ -6,6 +6,7 @@ class Mov{
   constructor(gl, xVector3d, sVector3d, matx){
     this.gl = gl;
     this.matx = matx;
+    //this.nmx = matFromM4(matx);
     this.cVector3d = xVector3d.addVector(sVector3d.mul(0.02));
     this.model = new AABB(gl, this.cVector3d.add(-2.5, -2.5, -2.5), this.cVector3d.add(+2.5, +2.5, +2.5),
       {r:Math.random()*100+100, g:Math.random()*100+100, b:Math.random()*100+100, a:255}
@@ -15,20 +16,21 @@ class Mov{
 
   render(positionAttributeLocation, colorLocation, glm, matx, deltaTime){
     this.matx = matx;
+    this.nmx = matFromM4(matx);
     let gl = this.gl;
     //this.cVector3d = this.cVector3d.addVector(this.speed.mul(deltaTime));
 
-      this.gl.uniformMatrix4fv(glm, false, m4.identity());
-      this.model = new AABB(this.gl, this.cVector3d.add(-2.5, -2.5, -2.5), this.cVector3d.add(+2.5, +2.5, +2.5),
+      this.gl.uniformMatrix4fv(glm, false, matx);
+   /*   this.rmodel = new AABB(this.gl, this.cVector3d.add(-2.5, -2.5, -2.5), this.cVector3d.add(+2.5, +2.5, +2.5),
       {r:Math.random()*100+100, g:Math.random()*100+100, b:Math.random()*100+100, a:255}
     );
-this.model.vertexList = this.getTransformed();
+this.rmodel.vertexList = this.getTransformed();
 var positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.model.vertexList), gl.STATIC_DRAW); 
-    this.model.glPositionBuffer = positionBuffer;
-    this.model.render(this.gl, positionAttributeLocation, colorLocation);
-
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.rmodel.vertexList), gl.STATIC_DRAW); 
+    this.rmodel.glPositionBuffer = positionBuffer;
+    this.rmodel.render(this.gl, positionAttributeLocation, colorLocation);
+*/ this.model.render(this.gl, positionAttributeLocation, colorLocation);
    let wmat = m4.identity();
      this.gl.uniformMatrix4fv(glm, false, wmat);
   }
@@ -39,6 +41,7 @@ var positionBuffer = gl.createBuffer();
       let v =[[this.model.vertexList[i*3+0]],[this.model.vertexList[i*3+1]],[this.model.vertexList[i*3+2]], [1]];
       //let v =[[this.model.vertexList[i*3+0],this.model.vertexList[i*3+1],this.model.vertexList[i*3+2], 0]];
       let res = calc.getMatrixProduct(matFromM4(this.matx),v);
+    // let res = calc.getMatrixProduct(this.nmx,v);
       ot.push(res[0][0]);
       ot.push(res[1][0]);
       ot.push(res[2][0]);
