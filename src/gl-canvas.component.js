@@ -94,7 +94,7 @@ class GLCanvas extends Control{
         this.pointList.push(pl);  
       })
       //console.log('mtr', this.moved.getTransformed());
-      let rvm = solveList(this.moved.getTransformed(), sv, nnv, nv);
+      let rvm = this.moved.reactLine(sv,nv);//solveList(this.moved.getTransformed(), sv, nnv, nv);
       console.log('rvm',rvm)
       if (rvm) {this.pointList.push(new Point(this.gl, new Vector3d(rvm.x,rvm.y,rvm.z) , new Vector3d(0,0,0)))}
       console.log(this.pointList);
@@ -199,7 +199,7 @@ class GLCanvas extends Control{
 
      
 
-      this.player.procMoves(world, deltaTime);
+      this.player.procMoves(world, deltaTime, this.moved);
 
       if (this.player.posZ > 30) {
         console.log('death');
@@ -214,6 +214,7 @@ class GLCanvas extends Control{
       ang+=0.1*deltaTime;
       wmat = m4.translate(wmat, 30, 15, 5);
       wmat = m4.xRotate(wmat, ang);
+      wmat = m4.scale(wmat,3,3,1);
       
       
       //gl.uniformMatrix4fv(worldLocation, false, wmat);

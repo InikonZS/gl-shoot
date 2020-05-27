@@ -38,18 +38,24 @@ class Player{
 
   }
 
-  procMoves(world, deltaTime){
+  react(obj, vx){
+    return (obj.reactLine(new Vector3d(-this.posX, -this.posY, -this.posZ-2),vx.add(this.posX,this.posY,this.posZ)));   
+  }
+
+  procMoves(world, deltaTime, obj){
     this.gravSpeed>-15? this.gravSpeed -= 0.3 : -15;
 
     let nz = this.posZ - (this.gravSpeed * deltaTime);
-      if (world.react(new Vector3d(-this.posX, -this.posY, -nz-2))){  //(inBoxA(-this.posX, -this.posY, -nz-2)){
+    let poi = (obj.reactLine(new Vector3d(-this.posX, -this.posY, -this.posZ-2),(new Vector3d(-this.posX, -this.posY, -nz-2)).add(this.posX,this.posY,this.posZ)));
+   // if (poi){this.gravSpeed+=0.1; this.posZ=poi.z}
+      if (world.react(new Vector3d(-this.posX, -this.posY, -nz-2))||(poi)){  //(inBoxA(-this.posX, -this.posY, -nz-2)){
         this.onFloor = true;
       } else {
         this.posZ = nz;
         this.onFloor = false;
       }
 
-      if (world.react(new Vector3d(-this.posX, -this.posY, -nz-2+3))){ 
+      if (world.react(new Vector3d(-this.posX, -this.posY, -nz-2+3))||this.react(obj,new Vector3d(-this.posX, -this.posY, -nz-2+3))){ 
         this.gravSpeed = -15;
       }
 
@@ -67,17 +73,18 @@ class Player{
         let nx = this.posX - (this.moveSpeed * deltaTime)* Math.sin(this.camRX);
         
 
-        if (!world.react(new Vector3d(-nx, -ny, -this.posZ-2))){//(!inBoxA(-nx, -ny, -this.posZ-2)){
+        if (!world.react(new Vector3d(-nx, -ny, -this.posZ-2))&&(!this.react(obj,new Vector3d(-nx, -ny, -this.posZ-2)))){//(!inBoxA(-nx, -ny, -this.posZ-2)){
           this.posY = ny;
           this.posX = nx;
         } else {
-          if (!world.react(new Vector3d(-this.posX, -ny, -this.posZ-2))){// (!inBoxA(-this.posX, -ny, -this.posZ-2)){
+          if (!world.react(new Vector3d(-this.posX, -ny, -this.posZ-2))&&(!this.react(obj,new Vector3d(-this.posX, -ny, -this.posZ-2)))){// (!inBoxA(-this.posX, -ny, -this.posZ-2)){
             this.posY = ny;
           } else {
-            if (!world.react(new Vector3d(-nx, -this.posY, -this.posZ-2))){///(!inBoxA(-nx, -this.posY, -this.posZ-2)){
+            if (!world.react(new Vector3d(-nx, -this.posY, -this.posZ-2))&&(!this.react(obj,new Vector3d(-nx, -this.posY, -this.posZ-2)))){///(!inBoxA(-nx, -this.posY, -this.posZ-2)){
               this.posX = nx;
             } else {
-              
+              this.posZ-=0.1;
+              //this.onFloor=false;  
             }    
           }  
         }

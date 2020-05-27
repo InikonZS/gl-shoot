@@ -49,6 +49,9 @@ var positionBuffer = gl.createBuffer();
     return ot;
   }
 
+  reactLine(sv, nv){
+    return solveList(this.getTransformed(), sv, nv);
+  }
 }
 function matFromM4(m){
   let res = [];
@@ -58,4 +61,24 @@ function matFromM4(m){
   }
   return res;
 }
+
+function solveList(vertexList, sv, nv){
+  let res =[];
+  let dvmin;
+  let dvminl=99999;
+  for (let i=0; i<vertexList.length; i+=9){
+    let v=[];
+    for (let j=0; j<3; j+=1){
+      v[j] = new Vector3d(vertexList[i+j*3+0], vertexList[i+j*3+1], vertexList[i+j*3+2]);
+    }
+   
+    let dv = calc.lineCrossTriangle(sv, nv.mul(1).addVector(sv), v[0], v[1], v[2]); 
+    if (dv && dvminl>dv.subVector(sv).abs()){
+      dvmin = dv;
+      dvminl = dv.subVector(sv).abs();
+    }
+  }
+  return dvmin;
+}
+
 module.exports = Mov;

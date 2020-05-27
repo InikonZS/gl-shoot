@@ -1,5 +1,6 @@
 const Vector3d = require('./vector3d.object.js');
 
+
 function getNormal(u, v, w){
   let nv = {x: v.x-u.x, y: v.y-u.y, z: v.z-u.z}  
   let nw = {x: w.x-u.x, y: w.y-u.y, z: w.z-u.z}  
@@ -19,10 +20,27 @@ function solveLinear(v1, v2, u, v, w){
   let d = getValueD(u, n);
   let nv = {x: v1.x-v2.x, y: v1.y-v2.y, z: v1.z-v2.z};
   let h = (n.x*v1.x + n.y*v1.y + n.z*v1.z +d) / (-(n.x*nv.x + n.y*nv.y + n.z*nv.z));
-  console.log(h, d);
+  //console.log(h, d);
   return {x: v1.x + h*nv.x, y: v1.y + h*nv.y, z: v1.z + h*nv.z}
 }
 
+function getMatrixProduct(m1, m2) {
+  const res = [];
+  const resl = m1.length;
+  for (let i = 0; i < m1.length; i += 1) {
+    const rw = [];
+    for (let j = 0; j < m2[0].length; j += 1) {
+      let rws = 0;
+      for (let k = 0; k < m2.length; k += 1) {
+        rws += m1[i][k] * m2[k][j];
+      }
+      rw.push(rws);
+    }
+    res.push(rw);
+  }
+  return res;
+}
+/*
 function getMatrixProduct(m1, m2) {
   const res = [];
   //const resl = Math.min(m1.length, m2[0].length);
@@ -39,7 +57,7 @@ function getMatrixProduct(m1, m2) {
     res.push(rw);
   }
   return res;
-}
+}*/
 
 function vecMul(a, b){
   let vm = (a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x);
@@ -78,6 +96,18 @@ function onLine(a, b, p){
   return (ap+bp)<=(al+0.01);
 }
 
+function lineCrossTriangle(a, b, u, v, w){
+  let res;
+  let dv = solveLinear(a, b, u, v, w);
+  let dVector = new Vector3d(dv.x, dv.y, dv.z);
+  if (inTriangle(u, v, w, dVector)){
+    if (onLine(a, b, dVector)){
+      res = dVector;
+    }
+  }
+  return res;
+}
+
 module.exports = {
   getMatrixProduct,
   solveLinear,
@@ -85,5 +115,6 @@ module.exports = {
   getValueD,
   vecMul,
   inTriangle,
-  onLine
+  onLine,
+  lineCrossTriangle
 }
