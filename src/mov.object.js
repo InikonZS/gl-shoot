@@ -36,7 +36,7 @@ var positionBuffer = gl.createBuffer();
   getTransformed(){
     let ot =[];
     for (let i=0; i<this.model.vertexList.length/3; i++){
-      let v =[[this.model.vertexList[i*3+0]],[this.model.vertexList[i*3+1]],[this.model.vertexList[i*3+2]], [0]];
+      let v =[[this.model.vertexList[i*3+0]],[this.model.vertexList[i*3+1]],[this.model.vertexList[i*3+2]], [1]];
       //let v =[[this.model.vertexList[i*3+0],this.model.vertexList[i*3+1],this.model.vertexList[i*3+2], 0]];
       let res = calc.getMatrixProduct(matFromM4(this.matx),v);
       ot.push(res[0][0]);

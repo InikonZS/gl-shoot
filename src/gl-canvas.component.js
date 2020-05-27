@@ -11,6 +11,31 @@ const Mov = require('./mov.object.js');
 const mapa = require('./maps.const.js');
 const calc = require('./calc.utils.js');
 
+function solveList(vertexList, sv, nnv, nv){
+  let res =[];
+  let dvmin;
+  let dvminl=99999;
+  for (let i=0; i<vertexList.length; i+=9){
+    let v=[];
+    for (let j=0; j<3; j+=1){
+      v[j] = new Vector3d(vertexList[i+j*3+0], vertexList[i+j*3+1], vertexList[i+j*3+2]);
+    }
+   
+    let dv = solveLinear(sv, nnv, v[0], v[1], v[2]);
+    let dvv = new Vector3d(dv.x,dv.y,dv.z)
+    if (calc.inTriangle(v[0],v[1],v[2], dvv)){
+      if (calc.onLine(sv, nv.mul(1000).addVector(sv), dvv)){
+        if (dvminl>dvv.subVector(sv).abs()){
+          dvmin =dvv;
+          dvminl = dvv.subVector(sv).abs();
+        }
+        //res.push(dv);
+      }
+    }
+  }
+  return dvmin;
+}
+
 function solveWorld(world, sv, nnv, nv){
   let res =[];
   let dvmin;
@@ -68,6 +93,10 @@ class GLCanvas extends Control{
         let pl = new Point(this.gl, new Vector3d(it.x,it.y,it.z) , new Vector3d(0,0,0));
         this.pointList.push(pl);  
       })
+      console.log('mtr', this.moved.getTransformed());
+      let rvm = solveList(this.moved.model.vertexList, sv, nnv, nv);
+      console.log('rvm',rvm)
+      if (rvm) {this.pointList.push(new Point(this.gl, new Vector3d(rvm.x,rvm.y,rvm.z) , new Vector3d(0,0,0)))}
       console.log(this.pointList);
     });
    
@@ -153,6 +182,7 @@ class GLCanvas extends Control{
     
     let moved = new Mov(gl,new Vector3d(0, 0, 0), new Vector3d(1,1,1), m4.identity());
     console.log('fgh', moved.getTransformed());
+    this.moved = moved;
 
     let world = new World (gl, mapa);
     this.world=world;
